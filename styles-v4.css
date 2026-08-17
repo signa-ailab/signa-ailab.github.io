@@ -10,3 +10,45 @@
 .footer{border-top:1px solid var(--line);background:#fff;padding:48px 0 34px}.footer-top{display:grid;grid-template-columns:1.2fr .8fr .8fr;gap:70px;padding-bottom:34px;border-bottom:1px solid #EFECF1}.footer-brand img{width:154px;display:block;margin-bottom:17px}.footer-brand p{font-size:13px;line-height:1.75;color:#817B84;margin:0;max-width:360px}.footer-col h4{font-size:12px;font-weight:750;color:#342F37;margin:0 0 14px}.footer-col{display:grid;align-content:start;gap:9px}.footer-col a{font-size:13px;color:#6E6871}.footer-col a:hover{color:var(--brand)}.footer-bottom{display:flex;justify-content:space-between;align-items:flex-start;gap:30px;padding-top:26px}.footer-legal,.footer-contact{font-size:12px;line-height:1.8;color:#938D96}.footer-contact{text-align:right}
 @media(max-width:980px){.container,.header .inner{width:min(100% - 36px,var(--max))}.nav>a:not(.play),.lang{display:none}.hero-grid,.story-grid,.report-wrap,.local-grid,.footer-top{grid-template-columns:1fr;gap:52px}.hero{min-height:auto}.hero-grid{padding:64px 0 74px}h1{font-size:42px}.intro h2{font-size:37px}.story h3,.report h3,.local h3,.final h3{font-size:33px}.story.reverse .visual,.story.reverse .copy{order:initial}.product-stage{min-height:550px}.app-screen{width:306px;height:542px}.visual-frame,.report .visual-frame{width:min(100%,430px);height:600px}.report-wrap{padding:38px 24px}.footer-bottom{flex-direction:column}.footer-contact{text-align:left}}
 @media(max-width:560px){.header{height:68px}.brand img{width:142px}.play{padding:9px 14px}.hero-grid{gap:34px}h1{font-size:38px}.hero-copy{font-size:16px}.actions{flex-direction:column;align-items:stretch}.btn{width:100%}.product-stage{min-height:500px}.app-screen{width:280px;height:498px}.intro,.story,.report,.final{padding:84px 0}.local{padding:82px 0}.visual-frame,.report .visual-frame{height:560px}}
+
+/* Production asset fixes: official SIGNA wordmark + official Google Play badges */
+.brand img,.footer-brand img{display:none}
+.brand::before,.footer-brand::before{
+  content:"";
+  display:block;
+  width:164px;
+  height:34px;
+  background:url("/assets/signa-logo-purple.png") left center/contain no-repeat;
+}
+.footer-brand::before{width:154px;height:32px;margin-bottom:17px}
+
+.play,.btn.primary{
+  color:transparent!important;
+  font-size:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background-color:transparent!important;
+  background-repeat:no-repeat!important;
+  background-position:center!important;
+  background-size:contain!important;
+  box-shadow:none!important;
+}
+.play{width:134px;height:42px}
+.btn.primary{width:184px;height:56px}
+html[lang="ko"] .play,
+html[lang="ko"] .btn.primary{
+  background-image:url("https://play.google.com/intl/ko/badges/static/images/badges/ko_badge_web_generic.png")!important;
+}
+html:not([lang="ko"]) .play,
+html:not([lang="ko"]) .btn.primary{
+  background-image:url("https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png")!important;
+}
+@media(max-width:560px){
+  .brand::before{width:142px;height:30px}
+  .play{width:118px!important;height:36px!important}
+  .actions{align-items:flex-start}
+  .actions .btn.primary{width:174px!important;height:52px!important}
+  .actions .btn.secondary{width:auto}
+  .final .btn.primary{width:174px!important;height:52px!important}
+}
