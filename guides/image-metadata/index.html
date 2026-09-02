@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<title>Image Metadata: What It Can Tell You About a Photo | SIGNA</title>
+<meta name="description" content="Learn what image metadata can reveal about a photo, including camera details, software declarations, AI workflow information, and the limits of metadata-based conclusions.">
+<link rel="canonical" href="https://signa-ailab.github.io/guides/image-metadata/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SIGNA AI Lab">
+<meta property="og:title" content="Image Metadata: What It Can Tell You About a Photo | SIGNA">
+<meta property="og:description" content="A practical guide to photo metadata, software declarations, AI workflow information, and their limitations.">
+<meta property="og:url" content="https://signa-ailab.github.io/guides/image-metadata/">
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"Article",
+  "headline":"What Can Image Metadata Tell You About a Photo?",
+  "description":"A practical guide to photo metadata, software declarations, AI workflow information, and their limitations.",
+  "datePublished":"2026-09-03",
+  "dateModified":"2026-09-03",
+  "author":{"@type":"Organization","name":"SIGNA AI Lab","url":"https://signa-ailab.github.io/"},
+  "publisher":{"@type":"Organization","name":"SIGNA AI Lab","url":"https://signa-ailab.github.io/"},
+  "mainEntityOfPage":"https://signa-ailab.github.io/guides/image-metadata/"
+}
+</script>
+<link rel="stylesheet" href="/styles-live.css">
+<style>
+.article-shell{padding:72px 0 100px}.article{width:min(800px,100%);margin:auto}.crumbs{font-size:12px;color:#89828c;margin-bottom:34px}.crumbs a{color:#3B1D5A;font-weight:700}.article .eyebrow{margin-bottom:16px}.article h1{font-size:50px;line-height:1.12;margin:0 0 20px}.dek{font-size:19px;line-height:1.75;color:#655e68;margin:0 0 20px}.meta{font-size:12px;color:#9a939d;padding-bottom:32px;border-bottom:1px solid #ece8ee}.article-body{padding-top:38px}.article-body h2{font-size:30px;line-height:1.32;letter-spacing:-.035em;margin:52px 0 16px}.article-body h2:first-child{margin-top:0}.article-body p,.article-body li{font-size:16px;line-height:1.9;color:#49434d}.article-body p{margin:0 0 19px}.article-body ul{padding-left:22px;margin:10px 0 23px}.article-body li{margin:7px 0}.callout{margin:32px 0;padding:23px 25px;border:1px solid #e5dfea;border-radius:16px;background:#faf8fb}.callout strong{display:block;color:#3B1D5A;margin-bottom:7px}.callout p{margin:0;font-size:15px}.refs{margin-top:50px;padding-top:30px;border-top:1px solid #ece8ee}.refs h2{margin-top:0}.refs a{color:#3B1D5A;text-decoration:underline;text-underline-offset:3px}.article-cta{margin-top:54px;padding:30px;border-radius:22px;background:#f8f6fa;border:1px solid #ebe6ef}.article-cta h2{margin:0 0 12px}.article-cta p{margin-bottom:18px}.back-guides{display:inline-block;margin-top:36px;font-size:13px;font-weight:750;color:#3B1D5A}@media(max-width:760px){.article-shell{padding:48px 0 72px}.article h1{font-size:35px}.dek{font-size:17px}.article-body h2{font-size:25px;margin-top:42px}.article-body p,.article-body li{font-size:15.5px}.article-cta{padding:23px}}
+</style>
+</head>
+<body>
+<header class="header"><div class="inner">
+  <a class="brand" href="/" aria-label="SIGNA AI Lab"><span class="logo-sprite" aria-hidden="true"></span></a>
+  <nav class="nav" aria-label="Primary"><a href="/">Product</a><a href="/guides/">Guides</a><span class="nav-divider" aria-hidden="true">|</span><a class="nav-utility" href="https://www.instagram.com/signa.ailab/" target="_blank" rel="noopener">Instagram</a><a class="nav-utility" href="mailto:signa.ailab@gmail.com">Support</a></nav>
+  <details class="mobile-menu"><summary aria-label="Menu">☰</summary><div class="mobile-panel"><a href="/">Product</a><a href="/guides/">Guides</a><div class="mobile-separator" aria-hidden="true"></div><a href="https://www.instagram.com/signa.ailab/" target="_blank" rel="noopener">Instagram</a><a href="mailto:signa.ailab@gmail.com">Support</a></div></details>
+</div></header>
+<main class="article-shell"><article class="container article">
+  <div class="crumbs"><a href="/guides/">Guides</a> / Image Metadata</div>
+  <div class="eyebrow">IMAGE METADATA</div>
+  <h1>What Can Image Metadata Tell You About a Photo?</h1>
+  <p class="dek">A photo can carry more than visible pixels. Metadata may include camera details, capture information, software declarations, or workflow information—but those details need to be read with care.</p>
+  <div class="meta">Published September 3, 2026 · SIGNA AI Lab</div>
+
+  <div class="article-body">
+    <h2>What is image metadata?</h2>
+    <p>Image metadata is information stored with, or associated with, an image file. Depending on the format and the software involved, it can describe things such as dimensions, capture time, camera settings, creator fields, color information, or software used in a workflow.</p>
+    <p>Common metadata families include EXIF, XMP, IPTC, and text fields used by formats such as PNG. Not every image contains the same fields, and some images contain very little metadata at all.</p>
+
+    <h2>What can photo metadata reveal?</h2>
+    <p>When metadata is present, it can provide useful context about the file. Examples include:</p>
+    <ul>
+      <li>camera model, capture time, orientation, or exposure-related fields;</li>
+      <li>image dimensions, color information, and other file characteristics;</li>
+      <li>creator or descriptive fields entered by a person or application;</li>
+      <li>declared software information written during saving, exporting, or processing;</li>
+      <li>workflow information stored by some image-generation or editing tools.</li>
+    </ul>
+    <p>Adobe, for example, documents XMP as a standard used across applications such as Photoshop to store and exchange metadata. That makes metadata useful for understanding what a file says about itself and about parts of its workflow.</p>
+
+    <h2>Can metadata tell you which software created or edited an image?</h2>
+    <p>Sometimes a file contains a software name or another declaration related to a tool. That can be useful context, but it should not be treated as proof that the named software created the image or performed a specific edit.</p>
+    <p>Metadata can be copied, changed, removed, or rewritten. A file may also pass through several applications, and one of them may write its own information without being the tool that originally created the image.</p>
+
+    <div class="callout"><strong>Metadata is an observation, not a verdict.</strong><p>A software declaration can be worth noting, but it does not prove ownership, originality, authorship, or whether an image was AI-generated.</p></div>
+
+    <h2>What about AI image metadata?</h2>
+    <p>Some AI image workflows can save structured information inside an image. ComfyUI is a clear example: its official documentation explains that the Save Image node saves PNG files and can embed workflow metadata, including prompt-related information, for later reference.</p>
+    <p>If that information remains in the file, it can be observed as part of the image's metadata. But its presence is not the same as independent verification of the image's origin.</p>
+    <p>The reverse is just as important: if AI-related workflow metadata is absent, that does not mean the image was not AI-generated. Metadata may never have been written, or it may have been removed during later processing.</p>
+
+    <h2>Why can metadata disappear?</h2>
+    <p>Resaving, format conversion, recompression, screenshots, editing applications, and online services can change what metadata remains attached to an image. Different tools preserve different fields, so the metadata you see today may not represent every step the file went through.</p>
+    <p>That is why metadata works best as one source of context rather than as a complete history of an image.</p>
+
+    <h2>How SIGNA approaches image metadata</h2>
+    <p>SIGNA's Image State Analyzer can surface image information that is available in the file, including certain declared software or workflow-related observations when they are present. SIGNA keeps these observations separate from claims about who created the image or whether the image is AI-generated.</p>
+    <p>SIGNA also reviews other image-state information alongside metadata, so users can look at multiple kinds of observations without collapsing them into a single authenticity or AI/not-AI verdict.</p>
+
+    <div class="callout"><strong>What an empty result means</strong><p>If a particular metadata field or declared tool record is not found, the safe conclusion is only that it was not observed in that check—not that the image is authentic, unedited, or not AI-generated.</p></div>
+
+    <section class="refs">
+      <h2>Further reading</h2>
+      <p><a href="https://helpx.adobe.com/photoshop/using/metadata-notes.html" target="_blank" rel="noopener">Adobe Photoshop — Metadata and notes</a></p>
+      <p><a href="https://docs.comfy.org/built-in-nodes/SaveImage" target="_blank" rel="noopener">ComfyUI — Save Image node documentation</a></p>
+    </section>
+
+    <section class="article-cta">
+      <h2>Review image information with SIGNA</h2>
+      <p>SIGNA for Android combines visible watermarking, an invisible SIGNA signal, and on-device image review. The information shown by SIGNA is reference information with limitations, not legal proof or an origin verdict.</p>
+      <a class="official-play-badge" href="https://play.google.com/store/apps/details?id=com.signa.app" target="_blank" rel="noopener"><img src="/assets/GetItOnGooglePlay_Badge_Web_color_English.png" alt="Get it on Google Play"></a>
+    </section>
+    <a class="back-guides" href="/guides/">← Back to SIGNA Guides</a>
+  </div>
+</article></main>
+<footer class="footer"><div class="container"><div class="footer-top"><div class="footer-brand"><span class="logo-sprite" aria-hidden="true"></span><p>An Android app for adding visible watermarks and invisible SIGNA signals, and reviewing image-state information when needed.</p></div><div class="footer-col"><h4>Explore</h4><a href="/">Product</a><a href="/guides/">Guides</a></div><div class="footer-col"><h4>SIGNA AI LAB</h4><a href="https://www.instagram.com/signa.ailab/" target="_blank" rel="noopener">Instagram</a><a href="mailto:signa.ailab@gmail.com">Support</a><a href="https://signa-ailab.github.io/signa-privacy/privacy.html" target="_blank" rel="noopener">Privacy Policy</a></div></div><div class="footer-bottom"><div>© 2026 SIGNA AI Lab. All rights reserved.</div><div class="right">Support · signa.ailab@gmail.com</div></div></div></footer>
+</body>
+</html>
