@@ -1,0 +1,195 @@
+name: SIGNA Umami Analytics Snapshot
+
+on:
+  schedule:
+    # 07:20 KST daily — before Search Watch / Growth / Marketing runs.
+    - cron: '20 22 * * *'
+    # 10:30 KST Tue/Fri — fresh snapshot before Content Execution.
+    - cron: '30 1 * * 2,5'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Collect aggregate Umami analytics through public read-only share page
+        shell: bash
+        run: |
+          python3 -m pip install --quiet selenium
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from selenium import webdriver
+          from selenium.webdriver.chrome.options import Options
+          from selenium.webdriver.support.ui import WebDriverWait
+
+          SHARE_SLUG = "OdDeX9fVWUSAZWw6"
+          SHARE_URL = f"https://cloud.umami.is/share/{SHARE_SLUG}"
+
+          opts = Options()
+          opts.add_argument('--headless=new')
+          opts.add_argument('--no-sandbox')
+          opts.add_argument('--disable-dev-shm-usage')
+          opts.add_argument('--window-size=1440,1200')
+          opts.add_argument('--lang=en-US')
+
+          driver = webdriver.Chrome(options=opts)
+          try:
+              driver.get(SHARE_URL)
+              WebDriverWait(driver, 30).until(
+                  lambda d: d.execute_script('return document.readyState') == 'complete'
+              )
+
+              js = r'''
+              const done = arguments[arguments.length - 1];
+              (async () => {
+                const slug = arguments[0];
+                const candidates = ['/analytics/eu', '/analytics/us', ''];
+                let resolved = null;
+                const resolveAttempts = [];
+
+                for (const base of candidates) {
+                  try {
+                    const r = await fetch(`${base}/api/share/${encodeURIComponent(slug)}`, {
+                      headers: {accept: 'application/json'}
+                    });
+                    resolveAttempts.push({base, status: r.status});
+                    if (!r.ok) continue;
+                    const data = await r.json();
+                    if (data.token && (data.websiteId || data.entityId)) {
+                      resolved = {base, data};
+                      break;
+                    }
+                  } catch (e) {
+                    resolveAttempts.push({base, status: -1, error: String(e)});
+                  }
+                }
+
+                if (!resolved) return done({ok:false, resolveAttempts});
+
+                const {base, data} = resolved;
+                const websiteId = data.websiteId || data.entityId;
+                const headers = {
+                  accept: 'application/json',
+                  'content-type': 'application/json',
+                  'x-umami-share-token': data.token,
+                  'x-umami-share-context': '1'
+                };
+
+                async function get(path) {
+                  const r = await fetch(`${base}${path}`, {headers});
+                  const txt = await r.text();
+                  let body;
+                  try { body = JSON.parse(txt); } catch { body = {raw: txt.slice(0, 1000)}; }
+                  return {status: r.status, body};
+                }
+
+                async function post(path, payload) {
+                  const r = await fetch(`${base}${path}`, {
+                    method: 'POST',
+                    headers,
+                    body: JSON.stringify(payload)
+                  });
+                  const txt = await r.text();
+                  let body;
+                  try { body = JSON.parse(txt); } catch { body = {raw: txt.slice(0, 1000)}; }
+                  return {status: r.status, body};
+                }
+
+                const now = Date.now();
+                const windows = {
+                  h24: now - 24 * 60 * 60 * 1000,
+                  d7: now - 7 * 24 * 60 * 60 * 1000,
+                  d30: now - 30 * 24 * 60 * 60 * 1000
+                };
+
+                const metricTypes = [
+                  'path','entry','exit','referrer','channel','country','region',
+                  'browser','os','device','language','event'
+                ];
+
+                const out = {
+                  schemaVersion: 1,
+                  ok: true,
+                  generatedAt: new Date(now).toISOString(),
+                  source: {
+                    provider: 'Umami Cloud',
+                    access: 'public-read-only-share',
+                    regionBase: base,
+                    websiteId,
+                    shareParameters: data.parameters || null
+                  },
+                  stats: {},
+                  pageviews: {},
+                  metrics: {d7: {}, d30: {}},
+                  eventStats: {},
+                  utm: {},
+                  notes: [
+                    'Aggregate analytics only; no raw sessions are stored.',
+                    'Short-lived Umami share authorization token is intentionally omitted.'
+                  ]
+                };
+
+                for (const [label, startAt] of Object.entries(windows)) {
+                  out.stats[label] = await get(
+                    `/api/websites/${websiteId}/stats?startAt=${startAt}&endAt=${now}`
+                  );
+                }
+
+                out.pageviews.d7 = await get(
+                  `/api/websites/${websiteId}/pageviews?startAt=${windows.d7}&endAt=${now}&unit=hour&timezone=Asia%2FSeoul`
+                );
+                out.pageviews.d30 = await get(
+                  `/api/websites/${websiteId}/pageviews?startAt=${windows.d30}&endAt=${now}&unit=day&timezone=Asia%2FSeoul`
+                );
+
+                for (const [windowLabel, startAt] of [['d7', windows.d7], ['d30', windows.d30]]) {
+                  for (const type of metricTypes) {
+                    out.metrics[windowLabel][type] = await get(
+                      `/api/websites/${websiteId}/metrics?startAt=${startAt}&endAt=${now}&type=${type}&limit=100&offset=0`
+                    );
+                  }
+                  out.eventStats[windowLabel] = await get(
+                    `/api/websites/${websiteId}/events/stats?startAt=${startAt}&endAt=${now}`
+                  );
+
+                  const startDate = new Date(startAt).toISOString();
+                  const endDate = new Date(now).toISOString();
+                  out.utm[windowLabel] = await post('/api/reports/utm', {
+                    websiteId,
+                    type: 'utm',
+                    filters: {},
+                    parameters: {startDate, endDate}
+                  });
+                }
+
+                done(out);
+              })().catch(e => done({ok:false, fatal:String(e), stack:e?.stack || null}));
+              '''
+
+              result = driver.execute_async_script(js, SHARE_SLUG)
+              if not result.get('ok'):
+                  raise SystemExit('Umami snapshot failed: ' + json.dumps(result, ensure_ascii=False))
+
+              Path('umami-snapshot.json').write_text(
+                  json.dumps(result, ensure_ascii=False, indent=2),
+                  encoding='utf-8'
+              )
+              print('SNAPSHOT_OK generatedAt=' + result['generatedAt'])
+              print('SOURCE_REGION=' + result['source']['regionBase'])
+              print('WEBSITE_ID=' + result['source']['websiteId'])
+          finally:
+              driver.quit()
+          PY
+
+      - name: Upload analytics snapshot artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: signa-umami-snapshot
+          path: umami-snapshot.json
+          if-no-files-found: error
+          retention-days: 30
