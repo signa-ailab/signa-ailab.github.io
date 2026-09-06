@@ -1,6 +1,10 @@
 name: SIGNA Umami Analytics Snapshot
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/umami-analytics-snapshot.yml
   schedule:
     # 07:20 KST daily — before Search Watch / Growth / Marketing runs.
     - cron: '20 22 * * *'
