@@ -1,0 +1,104 @@
+name: Apply Umami analytics once
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Apply analytics to all HTML documents
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          WEBSITE_ID = "a7502696-8f03-4f89-9909-31d9729a7231"
+          TRACKER = (
+              '<script defer src="https://cloud.umami.is/script.js" '
+              f'data-website-id="{WEBSITE_ID}" '
+              'data-domains="signa-ailab.github.io"></script>'
+          )
+
+          play_re = re.compile(
+              r'<a(?P<attrs>[^>]*href="https://play\.google\.com/store/apps/details\?id=com\.signa\.app[^\"]*"[^>]*)>'
+          )
+
+          changed = []
+          eligible = []
+          for path in sorted(Path('.').rglob('*.html')):
+              text = path.read_text(encoding='utf-8')
+              if '</head>' not in text.lower():
+                  continue
+              eligible.append(path)
+              original = text
+
+              if WEBSITE_ID not in text:
+                  text = text.replace('</head>', TRACKER + '\n</head>', 1)
+
+              def add_play_event(m):
+                  attrs = m.group('attrs')
+                  if 'data-umami-event=' in attrs:
+                      return m.group(0)
+                  return '<a' + attrs + ' data-umami-event="google-play-click">'
+
+              text = play_re.sub(add_play_event, text)
+
+              if text != original:
+                  path.write_text(text, encoding='utf-8')
+                  changed.append(path)
+
+          print('ELIGIBLE_HTML_COUNT =', len(eligible))
+          print('CHANGED_HTML_COUNT =', len(changed))
+          for p in changed:
+              print('CHANGED', p.as_posix())
+
+          errors = []
+          play_links = 0
+          tracked_play_links = 0
+          for path in eligible:
+              text = path.read_text(encoding='utf-8')
+              count = text.count(WEBSITE_ID)
+              if count != 1:
+                  errors.append(f'{path}: tracker_count={count}')
+
+              for m in play_re.finditer(text):
+                  play_links += 1
+                  if 'data-umami-event="google-play-click"' in m.group(0):
+                      tracked_play_links += 1
+                  else:
+                      errors.append(f'{path}: untracked Google Play link')
+
+          print('PLAY_LINK_COUNT =', play_links)
+          print('TRACKED_PLAY_LINK_COUNT =', tracked_play_links)
+          if errors:
+              print('VALIDATION = FAIL')
+              for e in errors:
+                  print('ERROR', e)
+              raise SystemExit(1)
+          print('VALIDATION = PASS')
+          PY
+
+      - name: Remove one-shot workflow and commit results
+        shell: bash
+        run: |
+          rm -f .github/workflows/apply-umami-once.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git status --short
+          git commit -m "feat: add privacy-friendly site analytics"
+          git push origin main
