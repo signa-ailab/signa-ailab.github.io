@@ -20,18 +20,23 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Collect aggregate Umami analytics through public read-only share page
+      - name: Collect aggregate Umami analytics through configured read-only share
         shell: bash
+        env:
+          UMAMI_SHARE_SLUG: ${{ secrets.UMAMI_SHARE_SLUG }}
         run: |
           python3 -m pip install --quiet selenium
           python3 - <<'PY'
           import json
+          import os
           from pathlib import Path
           from selenium import webdriver
           from selenium.webdriver.chrome.options import Options
           from selenium.webdriver.support.ui import WebDriverWait
 
-          SHARE_SLUG = "OdDeX9fVWUSAZWw6"
+          SHARE_SLUG = os.environ.get('UMAMI_SHARE_SLUG', '').strip()
+          if not SHARE_SLUG:
+              raise SystemExit('UMAMI_SHARE_SLUG secret is missing or empty')
           SHARE_URL = f"https://cloud.umami.is/share/{SHARE_SLUG}"
 
           opts = Options()
@@ -122,7 +127,7 @@ jobs:
                   generatedAt: new Date(now).toISOString(),
                   source: {
                     provider: 'Umami Cloud',
-                    access: 'public-read-only-share',
+                    access: 'read-only-share-secret',
                     regionBase: base,
                     websiteId,
                     shareParameters: data.parameters || null
