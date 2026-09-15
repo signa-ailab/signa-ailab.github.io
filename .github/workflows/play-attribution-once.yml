@@ -36,7 +36,7 @@ jobs:
           href_re = re.compile(r'href="([^"]+)"', re.I)
 
           changed_files = []
-          changed_anchors = 0
+          changed_anchors = [0]
           campaigns = set()
 
           def locale_for(path: Path):
@@ -52,10 +52,9 @@ jobs:
               parts = path.as_posix().split('/')
               is_article = 'articles' in parts and path.parent.name != 'articles'
               slug = path.parent.name if is_article else None
-              homepage_occurrence = 0
+              homepage_occurrence = [0]
 
               def replace_anchor(match):
-                  nonlocal homepage_occurrence, changed_anchors
                   tag = match.group(0)
                   href_match = href_re.search(tag)
                   if not href_match:
@@ -67,8 +66,9 @@ jobs:
                       campaign = f'article_{slug}_{locale}'
                   else:
                       source = 'homepage'
-                      homepage_occurrence += 1
-                      placement = 'hero' if homepage_occurrence == 1 else ('final' if homepage_occurrence == 2 else f'cta-{homepage_occurrence}')
+                      homepage_occurrence[0] += 1
+                      n = homepage_occurrence[0]
+                      placement = 'hero' if n == 1 else ('final' if n == 2 else f'cta-{n}')
                       campaign = f'homepage_{locale}'
 
                   raw_href = html.unescape(href_match.group(1))
@@ -96,7 +96,7 @@ jobs:
                   if is_article:
                       attrs.append(f'data-umami-event-article="{slug}"')
                   tag = tag[:-1] + ' ' + ' '.join(attrs) + '>'
-                  changed_anchors += 1
+                  changed_anchors[0] += 1
                   campaigns.add(campaign)
                   return tag
 
@@ -105,36 +105,35 @@ jobs:
                   path.write_text(updated, encoding='utf-8')
                   changed_files.append(path.as_posix())
 
-          # Validation: every SIGNA Play CTA in HTML must carry attribution.
           missing = []
           total_play_anchors = 0
           for path in sorted(Path('.').rglob('*.html')):
               text = path.read_text(encoding='utf-8')
               for m in anchor_re.finditer(text):
                   total_play_anchors += 1
-                  tag = m.group(0)
+                  tag = html.unescape(m.group(0))
                   required = [
                       'utm_source=signa_website',
                       'utm_medium=website',
                       'utm_campaign=',
+                      'utm_content=',
                       'data-umami-event="google-play-click"',
                       'data-umami-event-source=',
                       'data-umami-event-placement=',
                       'data-umami-event-locale=',
                       'data-umami-event-campaign=',
                   ]
-                  unescaped = html.unescape(tag)
-                  if any(x not in unescaped for x in required):
+                  if any(x not in tag for x in required):
                       missing.append(path.as_posix())
 
           if missing:
               raise SystemExit('ATTRIBUTION_VALIDATION_FAILED: ' + ', '.join(sorted(set(missing))))
-          if not changed_files or changed_anchors == 0:
+          if not changed_files or changed_anchors[0] == 0:
               raise SystemExit('NO_PLAY_CTA_CHANGES_MADE')
 
           print('ATTRIBUTION_OK')
           print('CHANGED_FILES=', len(changed_files))
-          print('CHANGED_ANCHORS=', changed_anchors)
+          print('CHANGED_ANCHORS=', changed_anchors[0])
           print('TOTAL_PLAY_ANCHORS=', total_play_anchors)
           print('CAMPAIGNS=', len(campaigns))
           for p in changed_files:
