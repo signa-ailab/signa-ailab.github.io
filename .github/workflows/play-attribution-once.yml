@@ -1,0 +1,153 @@
+name: One-time Play attribution update
+
+on:
+  push:
+    branches:
+      - growth/play-attribution-20260916
+
+permissions:
+  contents: write
+
+jobs:
+  apply-attribution:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout attribution branch
+        uses: actions/checkout@v4
+        with:
+          ref: growth/play-attribution-20260916
+          fetch-depth: 0
+
+      - name: Add UTM and Umami attribution to Play CTAs
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import html
+          import re
+          from pathlib import Path
+          from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
+
+          LOCALES = {'ko','ja','zh-hans','es','pt-br','fr','de'}
+          PLAY_PREFIX = 'https://play.google.com/store/apps/details?id=com.signa.app'
+          anchor_re = re.compile(r'<a\b[^>]*href="https://play\.google\.com/store/apps/details\?id=com\.signa\.app[^"]*"[^>]*>', re.I)
+          attr_re = re.compile(r'\s(data-umami-event(?:-[a-z0-9-]+)?)="[^"]*"', re.I)
+          href_re = re.compile(r'href="([^"]+)"', re.I)
+
+          changed_files = []
+          changed_anchors = 0
+          campaigns = set()
+
+          def locale_for(path: Path):
+              parts = path.as_posix().split('/')
+              return parts[0] if parts and parts[0] in LOCALES else 'en'
+
+          for path in sorted(Path('.').rglob('*.html')):
+              text = path.read_text(encoding='utf-8')
+              if PLAY_PREFIX not in text:
+                  continue
+
+              locale = locale_for(path)
+              parts = path.as_posix().split('/')
+              is_article = 'articles' in parts and path.parent.name != 'articles'
+              slug = path.parent.name if is_article else None
+              homepage_occurrence = 0
+
+              def replace_anchor(match):
+                  nonlocal homepage_occurrence, changed_anchors
+                  tag = match.group(0)
+                  href_match = href_re.search(tag)
+                  if not href_match:
+                      return tag
+
+                  if is_article:
+                      source = 'article'
+                      placement = 'article-cta'
+                      campaign = f'article_{slug}_{locale}'
+                  else:
+                      source = 'homepage'
+                      homepage_occurrence += 1
+                      placement = 'hero' if homepage_occurrence == 1 else ('final' if homepage_occurrence == 2 else f'cta-{homepage_occurrence}')
+                      campaign = f'homepage_{locale}'
+
+                  raw_href = html.unescape(href_match.group(1))
+                  split = urlsplit(raw_href)
+                  params = [(k, v) for k, v in parse_qsl(split.query, keep_blank_values=True)
+                            if k not in {'utm_source','utm_medium','utm_campaign','utm_content'}]
+                  params += [
+                      ('utm_source', 'signa_website'),
+                      ('utm_medium', 'website'),
+                      ('utm_campaign', campaign),
+                      ('utm_content', placement),
+                  ]
+                  new_href = urlunsplit((split.scheme, split.netloc, split.path, urlencode(params), split.fragment))
+                  new_href = html.escape(new_href, quote=True)
+
+                  tag = href_re.sub(f'href="{new_href}"', tag, count=1)
+                  tag = attr_re.sub('', tag)
+                  attrs = [
+                      'data-umami-event="google-play-click"',
+                      f'data-umami-event-source="{source}"',
+                      f'data-umami-event-placement="{placement}"',
+                      f'data-umami-event-locale="{locale}"',
+                      f'data-umami-event-campaign="{campaign}"',
+                  ]
+                  if is_article:
+                      attrs.append(f'data-umami-event-article="{slug}"')
+                  tag = tag[:-1] + ' ' + ' '.join(attrs) + '>'
+                  changed_anchors += 1
+                  campaigns.add(campaign)
+                  return tag
+
+              updated = anchor_re.sub(replace_anchor, text)
+              if updated != text:
+                  path.write_text(updated, encoding='utf-8')
+                  changed_files.append(path.as_posix())
+
+          # Validation: every SIGNA Play CTA in HTML must carry attribution.
+          missing = []
+          total_play_anchors = 0
+          for path in sorted(Path('.').rglob('*.html')):
+              text = path.read_text(encoding='utf-8')
+              for m in anchor_re.finditer(text):
+                  total_play_anchors += 1
+                  tag = m.group(0)
+                  required = [
+                      'utm_source=signa_website',
+                      'utm_medium=website',
+                      'utm_campaign=',
+                      'data-umami-event="google-play-click"',
+                      'data-umami-event-source=',
+                      'data-umami-event-placement=',
+                      'data-umami-event-locale=',
+                      'data-umami-event-campaign=',
+                  ]
+                  unescaped = html.unescape(tag)
+                  if any(x not in unescaped for x in required):
+                      missing.append(path.as_posix())
+
+          if missing:
+              raise SystemExit('ATTRIBUTION_VALIDATION_FAILED: ' + ', '.join(sorted(set(missing))))
+          if not changed_files or changed_anchors == 0:
+              raise SystemExit('NO_PLAY_CTA_CHANGES_MADE')
+
+          print('ATTRIBUTION_OK')
+          print('CHANGED_FILES=', len(changed_files))
+          print('CHANGED_ANCHORS=', changed_anchors)
+          print('TOTAL_PLAY_ANCHORS=', total_play_anchors)
+          print('CAMPAIGNS=', len(campaigns))
+          for p in changed_files:
+              print('FILE', p)
+          PY
+
+      - name: Commit attribution-only result and remove one-time workflow
+        shell: bash
+        run: |
+          git config user.name "SIGNA"
+          git config user.email "274256731+signa-ailab@users.noreply.github.com"
+          git rm .github/workflows/play-attribution-once.yml
+          git add -- '*.html' '**/*.html'
+          git status --short
+          git commit -m "growth: attribute website Play CTAs"
+          git push origin HEAD:growth/play-attribution-20260916
