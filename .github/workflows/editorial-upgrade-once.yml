@@ -28,17 +28,26 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
-          import re
           files = list(Path('.').glob('articles/**/*.html'))
           for loc in ['ko','ja','zh-hans','es','pt-br','fr','de']:
               files += list(Path(loc).glob('articles/**/*.html'))
           assert files
+          article_count = 0
           for p in files:
-              t=p.read_text(encoding='utf-8')
+              t = p.read_text(encoding='utf-8')
+              assert '\ufffd' not in t, f'UTF-8 replacement character found: {p}'
               if p.name == 'index.html' and '/articles/' in p.as_posix() and p.parent.name != 'articles':
+                  article_count += 1
                   assert '<html' in t and '</html>' in t, p
                   assert t.count('<h1') == 1, p
-          print(f'validated {len(files)} article html files')
+                  assert t.count('class="article-summary"') == 1, p
+                  assert t.count('class="next-reads"') == 1, p
+                  assert 'data-umami-event="article-next-click"' in t, p
+                  assert 'data-umami-event="article-product-interest"' in t, p
+                  assert 'data-umami-event="google-play-click"' in t, p
+                  assert 'data-website-id=' in t, p
+          assert article_count == 48, article_count
+          print(f'validated {article_count} localized article pages with UTF-8 and tracking checks')
           PY
       - name: Commit generated editorial changes
         run: |
