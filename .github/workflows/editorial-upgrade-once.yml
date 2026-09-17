@@ -1,0 +1,53 @@
+name: Editorial Upgrade Once
+
+on:
+  push:
+    branches:
+      - content/redteam-editorial-upgrade-20260917
+    paths:
+      - '_tools/editorial_upgrade_20260917.py'
+      - '.github/workflows/editorial-upgrade-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: content/redteam-editorial-upgrade-20260917
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply editorial upgrade
+        run: python _tools/editorial_upgrade_20260917.py
+      - name: Validate changed HTML
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          files = list(Path('.').glob('articles/**/*.html'))
+          for loc in ['ko','ja','zh-hans','es','pt-br','fr','de']:
+              files += list(Path(loc).glob('articles/**/*.html'))
+          assert files
+          for p in files:
+              t=p.read_text(encoding='utf-8')
+              if p.name == 'index.html' and '/articles/' in p.as_posix() and p.parent.name != 'articles':
+                  assert '<html' in t and '</html>' in t, p
+                  assert t.count('<h1') == 1, p
+          print(f'validated {len(files)} article html files')
+          PY
+      - name: Commit generated editorial changes
+        run: |
+          if git diff --quiet; then
+            echo 'No changes to commit.'
+            exit 0
+          fi
+          git config user.name 'SIGNA Editorial Bot'
+          git config user.email '274256731+signa-ailab@users.noreply.github.com'
+          git add articles ko/articles ja/articles zh-hans/articles es/articles pt-br/articles fr/articles de/articles index.html ko/index.html ja/index.html zh-hans/index.html es/index.html pt-br/index.html fr/index.html de/index.html styles-live.css
+          git commit -m 'content: apply multilingual red-team editorial upgrade'
+          git push origin HEAD:content/redteam-editorial-upgrade-20260917
