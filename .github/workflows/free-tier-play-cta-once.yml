@@ -1,0 +1,39 @@
+name: Free Tier Play CTA Once
+
+on:
+  push:
+    branches:
+      - growth/free-tier-play-cta-20260917
+    paths:
+      - '_tools/free_tier_play_cta_20260917.py'
+      - '.github/workflows/free-tier-play-cta-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: growth/free-tier-play-cta-20260917
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply conversion upgrade
+        run: python _tools/free_tier_play_cta_20260917.py
+      - name: Commit generated site changes
+        run: |
+          if git diff --quiet; then
+            echo 'No changes to commit.'
+            exit 0
+          fi
+          git config user.name 'SIGNA Conversion Bot'
+          git config user.email '274256731+signa-ailab@users.noreply.github.com'
+          git add index.html ko/index.html ja/index.html zh-hans/index.html es/index.html pt-br/index.html fr/index.html de/index.html \
+            articles ko/articles ja/articles zh-hans/articles es/articles pt-br/articles fr/articles de/articles \
+            styles-live.css
+          git commit -m 'growth: surface monthly free allowance and expand Play CTAs'
+          git push origin HEAD:growth/free-tier-play-cta-20260917
