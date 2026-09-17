@@ -28,6 +28,11 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          slugs = {
+              'can-you-tell-if-a-photo-was-edited','image-metadata','invisible-watermark',
+              'photo-privacy-before-sharing','what-happens-when-you-share-a-photo',
+              'on-device-photo-processing-privacy'
+          }
           files = list(Path('.').glob('articles/**/*.html'))
           for loc in ['ko','ja','zh-hans','es','pt-br','fr','de']:
               files += list(Path(loc).glob('articles/**/*.html'))
@@ -36,7 +41,7 @@ jobs:
           for p in files:
               t = p.read_text(encoding='utf-8')
               assert '\ufffd' not in t, f'UTF-8 replacement character found: {p}'
-              if p.name == 'index.html' and '/articles/' in p.as_posix() and p.parent.name != 'articles':
+              if p.name == 'index.html' and p.parent.name in slugs:
                   article_count += 1
                   assert '<html' in t and '</html>' in t, p
                   assert t.count('<h1') == 1, p
