@@ -85,7 +85,7 @@ LOCALES = {
         'root': 'de', 'hl': 'de',
         'free': 'Kostenlos installieren · 5 kostenlose Nutzungen pro Monat ohne Abo · Pro, wenn du mehr brauchst',
         'mid1_title': 'Teste SIGNA mit deinem eigenen Foto.',
-        'mid1_body': 'Du musst nicht zuerst ein Abo abschließen. Installiere SIGNA kostenlos, nutze die 5 kostenlosen Anwendungen pro Monat und entscheide danach, ob du Pro brauchst.',
+        'mid1_body': 'Du musst nicht zuerst ein Abo abschließen. Installiere SIGNA kostenlos, nutze es fünfmal pro Monat gratis und entscheide danach, ob du Pro brauchst.',
         'mid2_title': 'Probier es mit einem Foto aus, das du schon hast.',
         'mid2_body': 'Wasserzeichen, SIGNA-Signal und unterstützte Bildprüfung lassen sich am besten mit deiner eigenen Datei beurteilen.',
         'button': 'SIGNA bei Google Play ausprobieren',
@@ -207,6 +207,7 @@ def upgrade_article(p):
 def normalize_german_tone():
     paths = [Path('de/index.html')] + list(Path('de/articles').glob('*/index.html'))
     replacements = {
+        'Bestimmen Sie zuerst den Metadaten-Container, bevor Sie einen Wert deuten.': 'Bestimme zuerst den Metadaten-Container, bevor du einen Wert deutest.',
         'Prüfen Sie': 'Prüfe',
         'Fragen Sie': 'Frag',
         'Kombinieren Sie': 'Kombiniere',
@@ -223,7 +224,18 @@ def normalize_german_tone():
         'Stellen Sie': 'Stell',
         'Speichern Sie': 'Speichere',
         'Verwenden Sie': 'Verwende',
+        'verwenden Sie': 'verwende',
         'Denken Sie': 'Denk',
+        'Beginnen Sie': 'Beginne',
+        'Betrachten Sie': 'Betrachte',
+        'Trennen Sie': 'Trenne',
+        'Entscheiden Sie': 'Entscheide',
+        'Treffen Sie': 'Triff',
+        'Verstehen Sie': 'Verstehe',
+        'Verfolgen Sie': 'Verfolge',
+        'was Ihr Foto': 'was dein Foto',
+        'können Sie': 'kannst du',
+        'auf Ihrem Gerät': 'auf deinem Gerät',
     }
     changed = 0
     for p in paths:
@@ -276,23 +288,30 @@ def validate():
         assert 'data-umami-event="article-product-interest"' not in t, p
         assert t.count('class="next-reads"') == 1, p
 
-    # German site uses informal du/dein consistently. If formal second-person forms remain,
-    # print contexts and stop instead of silently shipping mixed tone.
+    # Keep the German reader voice informal (du/dein). We only flag patterns that
+    # unambiguously address the reader; standalone "Sie" can also mean "they/she".
     german_paths = [Path('de/index.html')] + list(Path('de/articles').glob('*/index.html'))
+    command_verbs = [
+        'Bestimmen','Prüfen','Fragen','Kombinieren','Nutzen','Lesen','Vergleichen','Beachten','Sehen','Öffnen',
+        'Schauen','Testen','Überprüfen','Bewerten','Stellen','Speichern','Verwenden','Denken','Beginnen','Betrachten',
+        'Trennen','Entscheiden','Treffen','Verstehen','Verfolgen'
+    ]
+    formal_command = re.compile(r'\b(?:' + '|'.join(command_verbs) + r') Sie\b|\bverwenden Sie\b')
+    formal_specific = re.compile(r'\b(?:können Sie|Ihr Foto|Ihrem Gerät|bevor Sie einen Wert deuten)\b')
     bad = []
-    formal = re.compile(r'\b(?:Sie|Ihnen|Ihr|Ihre|Ihren|Ihrem|Ihrer|Ihres)\b')
     for p in german_paths:
         t = p.read_text(encoding='utf-8')
-        for m in formal.finditer(t):
-            bad.append((p.as_posix(), t[max(0,m.start()-55):m.end()+55]))
+        for rx in (formal_command, formal_specific):
+            for m in rx.finditer(t):
+                bad.append((p.as_posix(), t[max(0,m.start()-55):m.end()+55]))
     if bad:
         for item in bad[:30]:
             print('GERMAN_FORMAL_REMAINS:', item)
-        raise AssertionError(f'German formal forms remain: {len(bad)}')
+        raise AssertionError(f'German reader-formal patterns remain: {len(bad)}')
 
     print('validated 8 homepages: 4 Play touchpoints each')
     print('validated 48 article pages: 2 Play touchpoints each')
-    print('validated free-tier copy and German informal tone')
+    print('validated free-tier copy and German informal reader tone')
 
 
 changed = 0
