@@ -1,0 +1,1 @@
+Temporary upload staging for invisible homepage screenshots. Do not merge this folder to main.
