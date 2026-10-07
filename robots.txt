@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://signa-ailab.github.io/sitemap.xml
+Sitemap: https://signa-ailab.github.io/sitemap-synthid-20261008.xml
