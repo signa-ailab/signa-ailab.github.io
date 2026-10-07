@@ -14,3 +14,10 @@
 .challenge-reveal[open] summary{margin-bottom:12px}
 .challenge-reveal p:last-child{margin-bottom:0}
 @media(max-width:760px){.forensics-challenge-grid{grid-template-columns:1fr;gap:22px}.forensics-challenge-image-link{border-radius:14px}.forensics-challenge-badge{min-width:32px;height:32px;font-size:14px}.challenge-reveal summary{font-size:14px}}
+
+/* AI_WATERMARK_COMPARISON_20261007 */
+.quiz-stack{display:grid;grid-template-columns:1fr;gap:28px;margin:28px 0 14px}
+.quiz-stack .forensics-challenge-card{margin:0}
+.quiz-stack .forensics-challenge-image-link img{width:100%;height:auto;aspect-ratio:1200/554;object-fit:cover}
+.quiz-stack .forensics-challenge-badge{margin-bottom:10px}
+@media(max-width:760px){.quiz-stack{gap:22px}.quiz-stack .forensics-challenge-image-link{border-radius:14px}}
