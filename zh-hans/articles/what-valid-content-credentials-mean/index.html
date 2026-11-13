@@ -1,19 +1,41 @@
 <!doctype html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="/favicon.ico" sizes="any"><title>C2PA 验证结果怎么看？照片的 Content Credentials 显示有效意味着什么 | SIGNA</title><meta name="description" content="拿到一张带内容凭证的照片，怎样看签名、文件匹配和编辑记录？找不到凭证时，又该去哪里核对？"><link rel="canonical" href="https://signa-ailab.github.io/zh-hans/articles/what-valid-content-credentials-mean/"><link rel="alternate" hreflang="en" href="https://signa-ailab.github.io/articles/what-valid-content-credentials-mean/"><link rel="alternate" hreflang="ko" href="https://signa-ailab.github.io/ko/articles/what-valid-content-credentials-mean/"><link rel="alternate" hreflang="ja" href="https://signa-ailab.github.io/ja/articles/what-valid-content-credentials-mean/"><link rel="alternate" hreflang="zh-Hans" href="https://signa-ailab.github.io/zh-hans/articles/what-valid-content-credentials-mean/"><link rel="alternate" hreflang="es-419" href="https://signa-ailab.github.io/es/articles/what-valid-content-credentials-mean/"><link rel="alternate" hreflang="pt-BR" href="https://signa-ailab.github.io/pt-br/articles/what-valid-content-credentials-mean/"><link rel="alternate" hreflang="fr" href="https://signa-ailab.github.io/fr/articles/what-valid-content-credentials-mean/"><link rel="alternate" hreflang="de" href="https://signa-ailab.github.io/de/articles/what-valid-content-credentials-mean/"><link rel="alternate" hreflang="x-default" href="https://signa-ailab.github.io/articles/what-valid-content-credentials-mean/"><meta property="og:type" content="article"><meta property="og:site_name" content="SIGNA AI Lab"><meta property="og:title" content="C2PA 验证结果怎么看？照片的 Content Credentials 显示有效意味着什么"><meta property="og:description" content="拿到一张带内容凭证的照片，怎样看签名、文件匹配和编辑记录？找不到凭证时，又该去哪里核对？"><meta property="og:url" content="https://signa-ailab.github.io/zh-hans/articles/what-valid-content-credentials-mean/"><script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"C2PA 验证结果怎么看？照片的 Content Credentials 显示有效意味着什么","description":"拿到一张带内容凭证的照片，怎样看签名、文件匹配和编辑记录？找不到凭证时，又该去哪里核对？","datePublished":"2026-11-13","dateModified":"2026-11-13","inLanguage":"zh-Hans","author":{"@type":"Organization","name":"SIGNA AI Lab","url":"https://signa-ailab.github.io/"},"publisher":{"@type":"Organization","name":"SIGNA AI Lab","url":"https://signa-ailab.github.io/"},"mainEntityOfPage":"https://signa-ailab.github.io/zh-hans/articles/what-valid-content-credentials-mean/"}</script><link rel="stylesheet" href="/styles-live.css"><link rel="stylesheet" href="/articles/articles.css"><script defer src="https://cloud.umami.is/script.js" data-website-id="a7502696-8f03-4f89-9909-31d9729a7231" data-domains="signa-ailab.github.io"></script>
-<style>.article-shell .article{width:min(820px,calc(100% - 36px));overflow-wrap:anywhere}</style>
-</head><body><header class="header"><div class="inner"><a class="brand" href="/zh-hans/" aria-label="SIGNA AI Lab"><span class="logo-sprite" aria-hidden="true"></span></a><nav class="nav"><a href="/zh-hans/">产品</a><span class="nav-divider" aria-hidden="true">|</span><a class="nav-current" href="/zh-hans/articles/" aria-current="page">文章</a><span class="nav-divider" aria-hidden="true">|</span><a class="nav-utility" href="mailto:signa.ailab@gmail.com">支持</a><details class="lang"><summary>ZH ▾</summary><div class="lang-menu"><a href="/articles/what-valid-content-credentials-mean/">English</a><a href="/ko/articles/what-valid-content-credentials-mean/">한국어</a><a href="/ja/articles/what-valid-content-credentials-mean/">日本語</a><a href="/zh-hans/articles/what-valid-content-credentials-mean/">简体中文</a><a href="/es/articles/what-valid-content-credentials-mean/">Español (Latinoamérica)</a><a href="/pt-br/articles/what-valid-content-credentials-mean/">Português (Brasil)</a><a href="/fr/articles/what-valid-content-credentials-mean/">Français</a><a href="/de/articles/what-valid-content-credentials-mean/">Deutsch</a></div></details></nav><details class="mobile-menu"><summary aria-label="Menu">☰</summary><div class="mobile-panel"><a href="/zh-hans/">产品</a><a href="/zh-hans/articles/"><strong>文章</strong></a><a href="mailto:signa.ailab@gmail.com">支持</a><a href="/articles/what-valid-content-credentials-mean/">English</a><a href="/ko/articles/what-valid-content-credentials-mean/">한국어</a><a href="/ja/articles/what-valid-content-credentials-mean/">日本語</a><a href="/zh-hans/articles/what-valid-content-credentials-mean/">简体中文</a><a href="/es/articles/what-valid-content-credentials-mean/">Español (Latinoamérica)</a><a href="/pt-br/articles/what-valid-content-credentials-mean/">Português (Brasil)</a><a href="/fr/articles/what-valid-content-credentials-mean/">Français</a><a href="/de/articles/what-valid-content-credentials-mean/">Deutsch</a></div></details></div></header><main class="article-shell"><article class="container article"><div class="crumbs"><a href="/zh-hans/articles/">文章</a></div><div class="eyebrow">照片来源 · C2PA 验证</div><h1>C2PA 验证结果怎么看？照片的 Content Credentials 显示有效意味着什么</h1><p class="dek">二手平台上有张相机的商品图，卖家说是实拍。你打开详情，看到内容凭证有效。先看凭证里有没有记载拍摄或编辑过程。如果想知道这台相机现在有没有磕碰，还得请卖家补拍细节图。</p><div class="meta">2026年11月13日 · SIGNA AI Lab</div><div class="article-body">
-<h2>先拿到照片文件，再打开凭证详情</h2>
-<p>如果手头只有聊天截图，先问发图的人能不能提供截图前的文件。用支持 C2PA 验证的工具打开照片，查看 Content Credentials，也就是内容凭证。C2PA 把其中带签名的记录称为“清单”（manifest）。里面可能写着使用了什么设备、哪个软件导出的、做过哪些编辑。看到签名方是编辑软件时，先看看它究竟记录了哪一步。</p>
-<h2>看到“有效”，再往下看一层</h2>
+<style>.article-shell .article{width:min(820px,calc(100% - 36px));overflow-wrap:anywhere}.article-body a[href^="https://contentauth.github.io/example-assets/"]{color:#3B1D5A;text-decoration:underline;text-underline-offset:3px}</style>
+</head><body><header class="header"><div class="inner"><a class="brand" href="/zh-hans/" aria-label="SIGNA AI Lab"><span class="logo-sprite" aria-hidden="true"></span></a><nav class="nav"><a href="/zh-hans/">产品</a><span class="nav-divider" aria-hidden="true">|</span><a class="nav-current" href="/zh-hans/articles/" aria-current="page">文章</a><span class="nav-divider" aria-hidden="true">|</span><a class="nav-utility" href="mailto:signa.ailab@gmail.com">支持</a><details class="lang"><summary>ZH ▾</summary><div class="lang-menu"><a href="/articles/what-valid-content-credentials-mean/">English</a><a href="/ko/articles/what-valid-content-credentials-mean/">한국어</a><a href="/ja/articles/what-valid-content-credentials-mean/">日本語</a><a href="/zh-hans/articles/what-valid-content-credentials-mean/">简体中文</a><a href="/es/articles/what-valid-content-credentials-mean/">Español (Latinoamérica)</a><a href="/pt-br/articles/what-valid-content-credentials-mean/">Português (Brasil)</a><a href="/fr/articles/what-valid-content-credentials-mean/">Français</a><a href="/de/articles/what-valid-content-credentials-mean/">Deutsch</a></div></details></nav><details class="mobile-menu"><summary aria-label="Menu">☰</summary><div class="mobile-panel"><a href="/zh-hans/">产品</a><a href="/zh-hans/articles/"><strong>文章</strong></a><a href="mailto:signa.ailab@gmail.com">支持</a><a href="/articles/what-valid-content-credentials-mean/">English</a><a href="/ko/articles/what-valid-content-credentials-mean/">한국어</a><a href="/ja/articles/what-valid-content-credentials-mean/">日本語</a><a href="/zh-hans/articles/what-valid-content-credentials-mean/">简体中文</a><a href="/es/articles/what-valid-content-credentials-mean/">Español (Latinoamérica)</a><a href="/pt-br/articles/what-valid-content-credentials-mean/">Português (Brasil)</a><a href="/fr/articles/what-valid-content-credentials-mean/">Français</a><a href="/de/articles/what-valid-content-credentials-mean/">Deutsch</a></div></details></div></header><main class="article-shell"><article class="container article"><div class="crumbs"><a href="/zh-hans/articles/">文章</a></div><div class="eyebrow">照片来源 · C2PA 验证</div><h1>C2PA 验证结果怎么看？照片的 Content Credentials 显示有效意味着什么</h1><p class="dek">二手平台上有张相机的商品图，卖家说是实拍。打开详情一看，内容凭证显示有效。接下来要看的是：这份记录是谁签的，记了什么，能不能和手里这张图对上。如果想确认机身现在有没有磕碰，还得请卖家补拍细节图。</p><div class="meta">2026年11月13日 · SIGNA AI Lab</div><div class="article-body">
+<h2>同一张图，为什么可能查出三种结果？</h2>
+<p>假设卖家拍了照片，在编辑软件里裁掉多余背景，再上传到商品页。拍摄文件、编辑软件导出的 JPEG、从网页保存下来的图片，虽然看起来相似，实际是三个文件。</p>
 <ul>
-  <li>格式符合规范（Well-Formed）：清单的结构和内容符合规范要求。</li>
-  <li>有效（Valid）：除了符合规范，记录还通过了签名等有效性检查，并且签名后没有被改动。</li>
-  <li>可信（Trusted）：在有效的基础上，签名方的凭据也满足验证工具的信任要求。</li>
+  <li><strong>拍摄文件。</strong> 设备没有写入 C2PA 记录时，即便拿到拍摄者保留的文件，也可能查不到内容凭证。</li>
+  <li><strong>编辑导出件。</strong> 支持 C2PA 的软件可以在导出时签名，并记录裁剪等操作。拍摄时没有可用的签名记录，能看到的历史就可能从编辑环节开始。</li>
+  <li><strong>网页保存件。</strong> 网站可能重新压缩图片，也有人直接截屏转发。到手这份文件可能找不到原记录，也可能与原记录校验不一致。</li>
 </ul>
-<p>不同工具的界面措辞可能不一样。打开详情，分别看签名方、记录内容和文件匹配结果。</p>
-<h2>没找到凭证，该怎么办？</h2>
-<p>有些照片从一开始就没有凭证。转发、截图或另存后，当前这份文件里也可能看不到原有记录。凭证有没有，不能单独用来判断是否用了 AI。要核实照片里的时间、地点或事件，优先找首发来源、拍摄者提供的文件和其他可相互印证的资料。</p>
-<h2>凭证有效，还要核对是不是这份文件</h2>
-<p>验证工具会对文件中纳入校验的部分计算哈希值，再与清单中的值比较。照片重新导出后，肉眼看上去可能没变，文件里的数据却可能变了。匹配失败时，可以请对方发来转换前的文件，再核对一次。</p>
+<p>如果问题是“商品现在是不是这个样子”，让卖家补拍你在意的部位。如果问题是“这张图经过哪些处理”，优先找编辑导出前后的文件分别核对。</p>
+<h2>点开凭证详情，依次看这三处</h2>
+<p>C2PA 把带签名的记录称为<strong>清单</strong>（manifest）。在 Adobe Content Authenticity Inspect 等支持验证的工具里，可以查看签名方、使用的应用或设备、记录的操作以及用到的素材。</p>
+<ol>
+  <li><strong>谁签的，什么时候签的？</strong> 编辑软件可以在导出时签名。签名时间对应这次签署，拍摄时间要看有没有独立的记录。</li>
+  <li><strong>记录写了什么？</strong> 操作栏可能有裁剪和缩放，素材栏可能有编辑时用到的上一份文件。点开素材，看看它有没有自己的来源记录。</li>
+  <li><strong>记录对应的是不是这份文件？</strong> 工具用纳入校验的数据计算哈希，再和清单里记录的值比对。普通的另存或重新导出也可能改变文件数据，即使肉眼看不出变化。</li>
+</ol>
+<h2>「有效」和「可信」分别过了哪些检查？</h2>
+<ul>
+  <li><strong>符合规范（Well-Formed）</strong>：清单的结构和内容满足规范要求。</li>
+  <li><strong>有效（Valid）</strong>：在符合规范的基础上，记录通过签名等有效性检查，签署后保持完整。</li>
+  <li><strong>可信（Trusted）</strong>：记录有效，签名凭据也满足验证工具采用的信任要求。</li>
+</ul>
+<p>这三项描述的是记录的状态。要判断当前文件是否通过验证，还要看文件绑定的结果。工具界面的叫法可能不同，别停在图标上，打开详情看实际通过了哪些检查。</p>
+<h2>用一份公开报告练习</h2>
+<p>Content Authenticity Initiative 提供了一张汽车照片和对应的验证报告。报告写明记录由 Photoshop 生成，列出了打开、裁剪和调整尺寸。导出 JPEG 的数据哈希比对通过，报告状态为 Valid。不过，作为素材使用的 JPEG 没有可用的来源记录。这就是一份报告同时告诉你两件事的例子：编辑导出件的记录可查，拍摄环节没有从这份报告得到确认。</p>
+<p><a href="https://contentauth.github.io/example-assets/images/car-es-Ps-Cr.jpg" target="_blank" rel="noopener">打开汽车照片公开示例</a></p>
+<p><a href="https://contentauth.github.io/example-assets/images/manifests/car-es-Ps-Cr.json" target="_blank" rel="noopener">查看示例的验证报告</a></p>
+<h2>根据结果决定下一步</h2>
+<ul>
+  <li><strong>没找到凭证：</strong> 问对方能否发来转存前的文件。工具如果只找到相似图片，可以沿这个线索找来源，再拿到目标文件做验证。</li>
+  <li><strong>签名方未被工具识别为可信：</strong> 查看证书相关详情，并和发布者提供的文件对照。这里要看的是信任检查，签名是否通过是另一项结果。</li>
+  <li><strong>文件匹配失败：</strong> 找到重新压缩或转换之前的版本，用同一个工具再查。单凭匹配失败看不出文件为什么会变。</li>
+  <li><strong>记录与文件都通过：</strong> 回到你想核实的问题。如果要确认拍摄日期、地点或商品状态，看看记录是否真的提到，再用首发信息或其他照片印证。</li>
+</ul>
+<p>如果你在查有没有用 AI，就看记录里是否写了生成或生成式编辑。没找到凭证，或者凭证里没有提到 AI，这个问题仍然无法靠当前文件确认。</p>
+<p>可以把结果写成一句容易复核的话：“导出图与记录匹配，报告里没有拍摄日期。”第一次用在线工具，可以拿公开样例练手。要查含有个人或客户信息的照片，上传前先看服务如何处理文件。</p>
 <section class="article-cta" aria-labelledby="download-signa">
   <h2 id="download-signa">用 Android 手机查看一张照片的文件信息</h2>
   <p>在 SIGNA Inspect 中打开受支持的照片，就能在手机上查看文件和 EXIF 信息，并检查是否有不可见的 SIGNA 信号。</p>
@@ -30,5 +52,6 @@
   <h2>参考资料</h2>
   <p><a href="https://spec.c2pa.org/specifications/specifications/2.5/specs/C2PA_Specification.html#_validation_states" target="_blank" rel="noopener">C2PA 技术规范 2.5：验证状态与文件绑定</a></p>
   <p><a href="https://spec.c2pa.org/specifications/specifications/2.2/explainer/Explainer.html" target="_blank" rel="noopener">C2PA 指南：找不到凭证时如何理解，记录涵盖哪些信息</a></p>
+  <p><a href="https://opensource.contentauthenticity.org/docs/getting-started/inspect/#information-displayed" target="_blank" rel="noopener">Adobe Inspect 指南：如何阅读详情</a></p>
 </section>
 </div></article></main><footer class="footer"><div class="container"><div class="footer-top"><div class="footer-brand"><span class="logo-sprite" aria-hidden="true"></span><p>一款 Android 应用，用于添加可见水印和不可见 SIGNA 信号，并在需要时查看图像状态信息。</p></div><div class="footer-col"><h4>文章</h4><a href="/zh-hans/">产品</a><a href="/zh-hans/articles/">文章</a></div><div class="footer-col"><h4>SIGNA AI LAB</h4><a href="mailto:signa.ailab@gmail.com">支持</a></div></div><div class="footer-bottom"><div>© 2026 SIGNA AI Lab. All rights reserved.</div><div class="right">支持 · signa.ailab@gmail.com</div></div></div></footer></body></html>
