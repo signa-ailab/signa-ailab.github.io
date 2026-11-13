@@ -50,3 +50,28 @@ html[lang="ko"] .hero h1,html[lang="ja"] .hero h1,html[lang="zh-Hans"] .hero h1{
 .story#watermark .designer-shot-pair{grid-template-columns:minmax(0,1fr);row-gap:22px;max-width:460px}
 .story#watermark .designer-view--portrait{width:min(70%,260px);margin:0 auto}
 }
+
+.free-access-note--hero { opacity: 1; color: var(--brand); }
+.free-access-note--hero strong { font-weight: 800; }
+.story p.analysis-free-note { margin-top: 12px; font-weight: 650; }
+.watermark-batch-preview { margin: 22px 0 0; max-width: 20rem; }
+.watermark-batch-preview a { display: block; color: var(--brand); }
+.watermark-batch-preview img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1.04;
+  object-fit: cover;
+  object-position: center top;
+  border: 1px solid #e2dce8;
+  border-radius: 14px;
+}
+.watermark-batch-preview a:hover span { text-decoration: underline; }
+.watermark-batch-preview span, .watermark-batch-preview figcaption {
+  display: block;
+  font-size: 13.5px;
+  line-height: 1.5;
+  margin-top: 6px;
+}
+.watermark-batch-preview span { font-weight: 720; }
+.watermark-batch-preview figcaption { color: #675f70; }
