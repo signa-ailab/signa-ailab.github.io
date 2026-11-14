@@ -75,3 +75,69 @@ html[lang="ko"] .hero h1,html[lang="ja"] .hero h1,html[lang="zh-Hans"] .hero h1{
 }
 .watermark-batch-preview span { font-weight: 720; }
 .watermark-batch-preview figcaption { color: #675f70; }
+
+#on-device .local-grid {
+  align-items: center;
+  gap: clamp(32px, 6vw, 92px);
+}
+#on-device .local-lead {
+  margin-top: 18px;
+  max-width: 43ch;
+}
+#on-device .local-note {
+  position: relative;
+  min-width: 0;
+  padding: 28px clamp(20px, 3.4vw, 38px) 26px;
+  border: 1px solid #eee0ca;
+  border-radius: 5px 5px 12px 5px;
+  background: #fff7e7;
+  box-shadow: 0 16px 36px rgba(21, 9, 34, .28);
+  color: #342044;
+  transform: rotate(-.7deg);
+}
+#on-device .local-note::before {
+  content: "";
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  background: radial-gradient(circle at 34% 29%, #b38bed, #7445a6 52%, #48216d 86%);
+  box-shadow: 3px 5px 7px rgba(48, 23, 68, .34);
+}
+#on-device .local-note h4 {
+  margin: 0 0 12px;
+  color: #422458;
+  font-size: clamp(21px, 2vw, 26px);
+  line-height: 1.25;
+}
+#on-device .local-note ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+#on-device .local-note li {
+  border-top: 1px solid #eadcc5;
+  padding: 10px 0;
+}
+#on-device .local-note li:last-child {
+  padding-bottom: 0;
+}
+#on-device .local-note strong {
+  display: block;
+  font-size: 16px;
+  line-height: 1.4;
+}
+#on-device .local-note p {
+  margin: 3px 0 0;
+  color: #53445d;
+  font-size: 15px;
+  line-height: 1.55;
+}
+@media (max-width: 620px) {
+  #on-device { padding-block: 50px; }
+  #on-device h3 span { display: inline-block; }
+  #on-device .local-note { transform: none; }
+}
