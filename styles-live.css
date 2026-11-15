@@ -141,3 +141,13 @@ html[lang="ko"] .hero h1,html[lang="ja"] .hero h1,html[lang="zh-Hans"] .hero h1{
   #on-device h3 span { display: inline-block; }
   #on-device .local-note { transform: none; }
 }
+
+.hero-meta--offline {
+  color: #62536d;
+}
+#on-device .local-note .local-note-connection {
+  border-top: 1px solid #eadcc5;
+  margin-top: 12px;
+  padding-top: 10px;
+  font-size: 14px;
+}
