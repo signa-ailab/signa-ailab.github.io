@@ -21,3 +21,5 @@
 .quiz-stack .forensics-challenge-image-link img{width:100%;height:auto;aspect-ratio:1200/554;object-fit:cover}
 .quiz-stack .forensics-challenge-badge{margin-bottom:10px}
 @media(max-width:760px){.quiz-stack{gap:22px}.quiz-stack .forensics-challenge-image-link{border-radius:14px}}
+/* Keep three-column evidence tables readable on narrow phones. */
+@media(max-width:620px){.article-table{table-layout:fixed}.article-table th,.article-table td{hyphens:auto;overflow-wrap:anywhere}}

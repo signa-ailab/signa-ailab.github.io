@@ -201,3 +201,8 @@ html[lang="ko"] .hero h1,html[lang="ja"] .hero h1,html[lang="zh-Hans"] .hero h1{
   .watermark-feature > .visual { grid-column: auto; grid-row: auto; }
   .photo-message-uses { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* Visually distinct, compact feature cue; uses the existing watermark grid. */
+#watermark .auto-position-feature{margin-top:16px;padding:13px 16px;border-left:3px solid var(--brand);border-radius:0 12px 12px 0;background:#F8F6FA;color:#4E4355;font-size:15px;line-height:1.72}
+#watermark .auto-position-feature strong{color:var(--brand);font-weight:750}
+@media(max-width:620px){#watermark .auto-position-feature{padding:12px 13px;font-size:14.5px}}
